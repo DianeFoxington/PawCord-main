@@ -1,6 +1,6 @@
 /**
  * @name PawCord
- * @version 1.0
+ * @version 1.1
  * @description Reimagines discord UI functionality. \n
  * Features:
  * Hidden server list (open it by hovering over where it should appear)
