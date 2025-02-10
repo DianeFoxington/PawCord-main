@@ -1,6 +1,6 @@
 /**
  * @name PawCord
- * @version 1.2
+ * @version 1.1
  * @description Reimagines discord UI functionality. \n
  * Features:
  * Hidden server list (open it by hovering over where it should appear)
@@ -36,19 +36,18 @@ module.exports = class PawCord {
 
         // Settings
         this.settings = {
-            settingOne: false,
-            settingTwo: false,
-            settingTree: false,
+            settingOne: true,
+            settingTwo: false
         };
     }
 
-
+    
     getSettingsPanel() {
         // Create the settings UI (a simple form with checkboxes for example)
         const settingsPanel = document.createElement('div');
 
         settingsPanel.innerHTML = `
-            <h3>Plugin Settings</h3>
+            <h3>Example Plugin Settings</h3>
             <label>
                 <input type="checkbox" id="settingOne" ${this.settings.settingOne ? 'checked' : ''}>
                 Enable Setting One
@@ -57,10 +56,6 @@ module.exports = class PawCord {
             <label>
                 <input type="checkbox" id="settingTwo" ${this.settings.settingTwo ? 'checked' : ''}>
                 Enable Setting Two
-            </label>
-            <label>
-                <input type="checkbox" id="settingThree" ${this.settings.settingThree ? 'checked' : ''}>
-                Enable Setting Three
             </label>
         `;
 
@@ -73,11 +68,6 @@ module.exports = class PawCord {
         settingsPanel.querySelector('#settingTwo').addEventListener('change', (e) => {
             this.settings.settingTwo = e.target.checked;
             console.log(`Setting Two: ${this.settings.settingTwo}`);
-        });
-
-        settingsPanel.querySelector('#settingThree').addEventListener('change', (e) => {
-            this.settings.settingThree = e.target.checked;
-            console.log(`Setting Three: ${this.settings.settingThree}`);
         });
 
         return settingsPanel;
@@ -134,7 +124,7 @@ module.exports = class PawCord {
         const sidebar = document.querySelector("nav .scrollerBase__99f8c ul");
 
         if (!sidebar) {
-            console.warn("[PawCordChat] Sidebar not found!");
+            console.warn("[AnimatorPlugin] Sidebar not found!");
             return;
         }
 
@@ -142,16 +132,16 @@ module.exports = class PawCord {
         const clickedLi = event.target.closest("li");
         if (!clickedLi || !sidebar.contains(clickedLi)) return;
 
-        console.log("[PawCordChat] Sidebar button clicked!", clickedLi);
+        console.log("[AnimatorPlugin] Sidebar button clicked!", clickedLi);
 
         // Select the chat panel dynamically
         const chatPanel = document.querySelector("[class*=chat]");
         if (!chatPanel) {
-            console.warn("[PawCordChat] Chat panel not found!");
+            console.warn("[AnimatorPlugin] Chat panel not found!");
             return;
         }
 
-        console.log("[PawCordChat] Applying animation to:", chatPanel);
+        console.log("[AnimatorPlugin] Applying animation to:", chatPanel);
 
         // Remove and re-add the class to force animation replay
         chatPanel.classList.remove("animated-slideIn");
@@ -161,10 +151,10 @@ module.exports = class PawCord {
 
 // Start the Opening Intro Plugin functionality
 startOpeningIntroPlugin() {
-    console.log("[PawCordIntro] Opening Intro Plugin Started!");
+    console.log("[DEBUG] Opening Intro Plugin Started!");
 
         if (!this.debugMode && BdApi.Data.load("OpeningIntroPlugin", "introPlayed")) {
-            console.log("[PawCordIntro] Intro already played, skipping.");
+            console.log("[DEBUG] Intro already played, skipping.");
             return;
         }
 
@@ -182,7 +172,7 @@ startOpeningIntroPlugin() {
 
     /** 🚀 Hides UI at the start */
     hideUI() {
-        console.log("[PawCordIntro] Hiding UI...");
+        console.log("[DEBUG] Hiding UI...");
 
         BdApi.injectCSS("hide-ui", `
             #app-mount {
@@ -193,7 +183,7 @@ startOpeningIntroPlugin() {
 
     /** 🚀 Forces UI above intro until intro ends */
     forceUIOnTop() {
-        console.log("[PawCordIntro] Forcing UI to the front every frame...");
+        console.log("[DEBUG] Forcing UI to the front every frame...");
 
         this.overrideInterval = setInterval(() => {
             const appMount = document.querySelector("#app-mount");
@@ -206,7 +196,7 @@ startOpeningIntroPlugin() {
 
     /** 🚀 Shows the intro with full animations */
     showIntro() {
-        console.log("[PawCordIntro] Showing Intro...");
+        console.log("[DEBUG] Showing Intro...");
 
         const introScreen = document.createElement("div");
         introScreen.id = "pawcord-intro";
@@ -259,7 +249,7 @@ startOpeningIntroPlugin() {
             }
         `);
 
-        console.log("[PawCordIntro] Intro Loaded!");
+        console.log("[DEBUG] Intro Loaded!");
         // Start typing effect
         this.typingEffect(text, "PAW CORD", 150, () => {
             setTimeout(() => {
@@ -285,7 +275,7 @@ startOpeningIntroPlugin() {
 
     /** 🚀 Slides UI sections into the center */
     slideUIIn() {
-        console.log("[PawCordIntro] Sliding UI into place...");
+        console.log("[DEBUG] Sliding UI into place...");
 
         BdApi.injectCSS("slide-ui-in", `
             #app-mount {
@@ -321,7 +311,7 @@ startOpeningIntroPlugin() {
     }
 
     cleanup() {
-        console.log("[PawCordIntro] Cleaning Up Intro...");
+        console.log("[DEBUG] Cleaning Up Intro...");
 
         if (this.overrideInterval) {
             clearInterval(this.overrideInterval);
@@ -338,7 +328,7 @@ startOpeningIntroPlugin() {
         BdApi.clearCSS("intro-animations");
         BdApi.clearCSS("slide-ui-in");
 
-        console.log("[PawCordIntro] Cleanup Complete!");
+        console.log("[DEBUG] Cleanup Complete!");
     }
 
     // Start the Hidden Server List functionality
@@ -379,7 +369,7 @@ startOpeningIntroPlugin() {
             return;
         }
 
-        
+        console.log("[Hidden Server List] Server list detected, hiding it by default.");
 
         // Hide the server list and expand the Discord UI
         serverList.classList.add("server-list-hidden");
@@ -404,7 +394,7 @@ startOpeningIntroPlugin() {
                 clearTimeout(this.hideTimeout);
                 this.hideTimeout = setTimeout(() => {
                     if (!this.isCursorStillOverServerList(event)) {
-                        
+                        console.log("[Hidden Server List] Cursor left, hiding server list.");
                         this.hideServerList();
                     }
                 }, 1000);
@@ -434,7 +424,7 @@ startOpeningIntroPlugin() {
         document.body.appendChild(this.hoverZone);
 
         this.hoverZone.addEventListener("mouseenter", () => {
-            
+            console.log("[Hidden Server List] Hover detected. Showing server list.");
             clearTimeout(this.hideTimeout);
             this.showServerList();
         });
@@ -444,7 +434,7 @@ startOpeningIntroPlugin() {
         if (this.observer) this.observer.disconnect();
 
         this.observer = new MutationObserver(() => {
-            console.log("[Hidden Server List] UI change detected, repositioning hover zone.");
+            
             this.createHoverZone();
         });
 
@@ -490,11 +480,22 @@ startOpeningIntroPlugin() {
     }
 
 // Update Checker
+getName() {
+    return "PawCord";
+}
+
+
 getLocalVersion() {
     try {
         const data = fs.readFileSync(this.pluginPath, 'utf8');
-        const versionMatch = data.match(/@version\s+([0-9\.]+)/);
-        this.localVersion = versionMatch ? versionMatch[1] : null;
+        const versionMatch = data.match(/@version\s+([\d.]+)/);
+        if (versionMatch) {
+            this.localVersion = versionMatch[1];
+            console.log(`[PawCord] Local Version Detected: ${this.localVersion}`);
+}        else {
+            console.warn("[PawCord] Failed to detect local version.");
+            this.localVersion = null;
+}
         
     } catch (err) {
         console.error("Error reading local plugin file:", err);
@@ -508,14 +509,20 @@ async getRemoteVersion() {
         const response = await fetch(rawGitHubUrl);
         if (response.ok) {
             const text = await response.text();
-            const versionMatch = text.match(/@version\s+([0-9\.]+)/);
-            this.remoteVersion = versionMatch ? versionMatch[1] : null;
+            const versionMatch = text.match(/@version\s+([\d.]+)/);
+            if (versionMatch) {
+                this.remoteVersion = versionMatch[1];
+                console.log(`[PawCord] Remote Version Detected: ${this.remoteVersion}`);
+            } else {
+                console.warn("[PawCord] Failed to detect remote version.");
+                this.remoteVersion = null;
+            }
         } else {
-            console.error('[PawCord] Failed to fetch remote plugin');
+            console.error('[PawCord] Failed to fetch remote plugin. HTTP Status:', response.status);
             this.remoteVersion = null;
         }
     } catch (err) {
-        console.error("Error fetching remote plugin version:", err);
+        console.error("[PawCord] Error fetching remote plugin version:", err);
         this.remoteVersion = null;
     }
 }
@@ -537,8 +544,15 @@ async checkForUpdates() {
     this.getLocalVersion();
     await this.getRemoteVersion();
 
-    if (this.localVersion && this.remoteVersion && this.localVersion !== this.remoteVersion) {
+    if (this.localVersion && this.remoteVersion) {
+        const lastUpdatedVersion = BdApi.loadData("PawCord", "lastUpdatedVersion");
+
         if (this.compareVersions(this.remoteVersion, this.localVersion) > 0) {
+            if (lastUpdatedVersion === this.remoteVersion) {
+                console.log(`[PawCord] Update already applied in this session. Skipping reload.`);
+                return; // Prevent infinite loop
+            }
+
             console.log(`New version available! ${this.remoteVersion} > ${this.localVersion}`);
             await this.updatePlugin();
         }
@@ -546,13 +560,16 @@ async checkForUpdates() {
 }
 
 async updatePlugin() {
-    const rawGitHubUrl = 'https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js';
+    const rawGitHubUrl = 'https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js'; // Change this to your GitHub link
+
     try {
         const response = await fetch(rawGitHubUrl);
         if (response.ok) {
             const text = await response.text();
-            fs.writeFileSync(this.pluginPath, text, 'utf8');
-            this.showUpdatePopup();
+console.log(`[PawCord] Plugin update downloaded. Reloading plugin...`);
+BdApi.saveData("PawCord", "lastUpdatedVersion", this.remoteVersion);
+console.log(`[PawCord] Plugin updated to version ${this.remoteVersion}. Reloading...`);
+BdApi.Plugins.reload(this.getName());
         } else {
             console.error('[PawCord] Failed to fetch remote plugin for update');
         }
@@ -589,7 +606,10 @@ start() {
     this.startHiddenServerList();
 
     // Start auto update check
-    this.checkForUpdates();
+    // Wait for the update check to complete
+    this.checkForUpdates().then(() => {
+        console.log("[PawCord] Update check completed.");
+    });
 
     // This assumes the plugin file is in the same directory as the plugin code
     const pluginPath = path.resolve(__dirname, 'PawCord.plugin.js');
@@ -603,6 +623,7 @@ start() {
     stop() {
 
         console.log("[PawCord] Stopped!");
+        // Stop each individual plugin functionality
 
 
 // 1 
