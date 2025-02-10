@@ -36,8 +36,9 @@ module.exports = class PawCord {
 
         // Settings
         this.settings = {
-            settingOne: true,
-            settingTwo: false
+            settingOne: false,
+            settingTwo: false,
+            settingTree: false,
         };
     }
 
@@ -47,7 +48,7 @@ module.exports = class PawCord {
         const settingsPanel = document.createElement('div');
 
         settingsPanel.innerHTML = `
-            <h3>Example Plugin Settings</h3>
+            <h3>Plugin Settings</h3>
             <label>
                 <input type="checkbox" id="settingOne" ${this.settings.settingOne ? 'checked' : ''}>
                 Enable Setting One
@@ -56,6 +57,10 @@ module.exports = class PawCord {
             <label>
                 <input type="checkbox" id="settingTwo" ${this.settings.settingTwo ? 'checked' : ''}>
                 Enable Setting Two
+            </label>
+            <label>
+                <input type="checkbox" id="settingThree" ${this.settings.settingThree ? 'checked' : ''}>
+                Enable Setting Three
             </label>
         `;
 
@@ -68,6 +73,11 @@ module.exports = class PawCord {
         settingsPanel.querySelector('#settingTwo').addEventListener('change', (e) => {
             this.settings.settingTwo = e.target.checked;
             console.log(`Setting Two: ${this.settings.settingTwo}`);
+        });
+
+        settingsPanel.querySelector('#settingThree').addEventListener('change', (e) => {
+            this.settings.settingThree = e.target.checked;
+            console.log(`Setting Three: ${this.settings.settingThree}`);
         });
 
         return settingsPanel;
@@ -124,7 +134,7 @@ module.exports = class PawCord {
         const sidebar = document.querySelector("nav .scrollerBase__99f8c ul");
 
         if (!sidebar) {
-            console.warn("[AnimatorPlugin] Sidebar not found!");
+            console.warn("[PawCordChat] Sidebar not found!");
             return;
         }
 
@@ -132,16 +142,16 @@ module.exports = class PawCord {
         const clickedLi = event.target.closest("li");
         if (!clickedLi || !sidebar.contains(clickedLi)) return;
 
-        console.log("[AnimatorPlugin] Sidebar button clicked!", clickedLi);
+        console.log("[PawCordChat] Sidebar button clicked!", clickedLi);
 
         // Select the chat panel dynamically
         const chatPanel = document.querySelector("[class*=chat]");
         if (!chatPanel) {
-            console.warn("[AnimatorPlugin] Chat panel not found!");
+            console.warn("[PawCordChat] Chat panel not found!");
             return;
         }
 
-        console.log("[AnimatorPlugin] Applying animation to:", chatPanel);
+        console.log("[PawCordChat] Applying animation to:", chatPanel);
 
         // Remove and re-add the class to force animation replay
         chatPanel.classList.remove("animated-slideIn");
@@ -151,10 +161,10 @@ module.exports = class PawCord {
 
 // Start the Opening Intro Plugin functionality
 startOpeningIntroPlugin() {
-    console.log("[DEBUG] Opening Intro Plugin Started!");
+    console.log("[PawCordIntro] Opening Intro Plugin Started!");
 
         if (!this.debugMode && BdApi.Data.load("OpeningIntroPlugin", "introPlayed")) {
-            console.log("[DEBUG] Intro already played, skipping.");
+            console.log("[PawCordIntro] Intro already played, skipping.");
             return;
         }
 
@@ -172,7 +182,7 @@ startOpeningIntroPlugin() {
 
     /** 🚀 Hides UI at the start */
     hideUI() {
-        console.log("[DEBUG] Hiding UI...");
+        console.log("[PawCordIntro] Hiding UI...");
 
         BdApi.injectCSS("hide-ui", `
             #app-mount {
@@ -183,7 +193,7 @@ startOpeningIntroPlugin() {
 
     /** 🚀 Forces UI above intro until intro ends */
     forceUIOnTop() {
-        console.log("[DEBUG] Forcing UI to the front every frame...");
+        console.log("[PawCordIntro] Forcing UI to the front every frame...");
 
         this.overrideInterval = setInterval(() => {
             const appMount = document.querySelector("#app-mount");
@@ -196,7 +206,7 @@ startOpeningIntroPlugin() {
 
     /** 🚀 Shows the intro with full animations */
     showIntro() {
-        console.log("[DEBUG] Showing Intro...");
+        console.log("[PawCordIntro] Showing Intro...");
 
         const introScreen = document.createElement("div");
         introScreen.id = "pawcord-intro";
@@ -249,7 +259,7 @@ startOpeningIntroPlugin() {
             }
         `);
 
-        console.log("[DEBUG] Intro Loaded!");
+        console.log("[PawCordIntro] Intro Loaded!");
         // Start typing effect
         this.typingEffect(text, "PAW CORD", 150, () => {
             setTimeout(() => {
@@ -275,7 +285,7 @@ startOpeningIntroPlugin() {
 
     /** 🚀 Slides UI sections into the center */
     slideUIIn() {
-        console.log("[DEBUG] Sliding UI into place...");
+        console.log("[PawCordIntro] Sliding UI into place...");
 
         BdApi.injectCSS("slide-ui-in", `
             #app-mount {
@@ -311,7 +321,7 @@ startOpeningIntroPlugin() {
     }
 
     cleanup() {
-        console.log("[DEBUG] Cleaning Up Intro...");
+        console.log("[PawCordIntro] Cleaning Up Intro...");
 
         if (this.overrideInterval) {
             clearInterval(this.overrideInterval);
@@ -328,7 +338,7 @@ startOpeningIntroPlugin() {
         BdApi.clearCSS("intro-animations");
         BdApi.clearCSS("slide-ui-in");
 
-        console.log("[DEBUG] Cleanup Complete!");
+        console.log("[PawCordIntro] Cleanup Complete!");
     }
 
     // Start the Hidden Server List functionality
@@ -369,7 +379,7 @@ startOpeningIntroPlugin() {
             return;
         }
 
-        console.log("[Hidden Server List] Server list detected, hiding it by default.");
+        
 
         // Hide the server list and expand the Discord UI
         serverList.classList.add("server-list-hidden");
@@ -394,7 +404,7 @@ startOpeningIntroPlugin() {
                 clearTimeout(this.hideTimeout);
                 this.hideTimeout = setTimeout(() => {
                     if (!this.isCursorStillOverServerList(event)) {
-                        console.log("[Hidden Server List] Cursor left, hiding server list.");
+                        
                         this.hideServerList();
                     }
                 }, 1000);
@@ -424,7 +434,7 @@ startOpeningIntroPlugin() {
         document.body.appendChild(this.hoverZone);
 
         this.hoverZone.addEventListener("mouseenter", () => {
-            console.log("[Hidden Server List] Hover detected. Showing server list.");
+            
             clearTimeout(this.hideTimeout);
             this.showServerList();
         });
@@ -492,7 +502,7 @@ getLocalVersion() {
     }
 }
 async getRemoteVersion() {
-    const rawGitHubUrl = 'https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js'; // Change this to your GitHub link
+    const rawGitHubUrl = 'https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js';
 
     try {
         const response = await fetch(rawGitHubUrl);
@@ -536,8 +546,7 @@ async checkForUpdates() {
 }
 
 async updatePlugin() {
-    const rawGitHubUrl = 'https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js'; // Change this to your GitHub link
-
+    const rawGitHubUrl = 'https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js';
     try {
         const response = await fetch(rawGitHubUrl);
         if (response.ok) {
@@ -594,7 +603,6 @@ start() {
     stop() {
 
         console.log("[PawCord] Stopped!");
-        // Stop each individual plugin functionality
 
 
 // 1 
